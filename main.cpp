@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDebug>
-#include <QtSql>
+#include <QSql>
+#include <QFile>
+#include "database.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,14 +34,12 @@ int main(int argc, char *argv[])
     file.close();
 
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL", "mydb");
-    db.setHostName("176.57.216.145");
-    db.setDatabaseName("cl132598_tender");
-    db.setUserName("cl132598_tender");
-    db.setPassword("t8b54g2rg");
-    bool ok = db.open();
+    Database &db = Database::Instance();
+    bool ok = db.connectToDataBase();
+    Database::Instance();
 
-    QSqlQuery *query = new QSqlQuery(db);
+    qDebug() << ok;
+    QSqlQuery *query = new QSqlQuery(db.db);
     query->exec("SELECT * FROM categories");
 
     while (query->next()) {
@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
            qDebug() << category;
     }
 
-    qDebug() << ok;
 
     return a.exec();
 }

@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS "MAXBUFFERSIZE=4096" QUERIES=\\\":/statements\
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    model.cpp
+    model.cpp \
+    database.cpp
 
 HEADERS += \
         mainwindow.h \
-    model.h
+    model.h \
+    database.h
 
 FORMS += \
         mainwindow.ui

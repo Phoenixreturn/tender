@@ -5,7 +5,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    treeModel = new TreeModel();
     ui->setupUi(this);
+    ui->treeView->setModel(treeModel);
 
 }
 

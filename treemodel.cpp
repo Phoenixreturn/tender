@@ -9,7 +9,7 @@ TreeModel::TreeModel(QObject *parent)
     db = &Database::Instance();
     bool ok = db->connectToDataBase();
     QList<QVariant> rootData;
-    rootData << "name" << "description";
+    rootData << "name";
     rootItem = new TreeItem(rootData);
     readSqlStatements();
     setupModelData(rootItem);
@@ -147,7 +147,7 @@ int TreeModel::readSqlStatements()
     while (!file.atEnd()) {
         const QByteArray line = file.readLine();
         const QString str( line );
-        const QStringList lst = str.split('=');
+        const QStringList lst = str.split(QRegExp("=="));
         if (lst.size() != 2) {
             qDebug() << "error";
             return -2;
@@ -157,8 +157,11 @@ int TreeModel::readSqlStatements()
         }
         if(!QString::compare(lst.first(), "category_by_parent", Qt::CaseInsensitive)) {
              category_by_parent_query = lst.last();
-             category_by_parent_query.remove(QRegExp("[\\n\\t\\r]"));
-             category_by_parent_query += "=?";
+             category_by_parent_query.replace(QString("%"), QString("=?"));
+        }
+        if(!QString::compare(lst.first(), "category_products", Qt::CaseInsensitive)) {
+             category_products_query = lst.last();
+             category_products_query.replace(QString("%"), QString("=?"));
         }
     }
 

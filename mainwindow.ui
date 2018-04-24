@@ -6,33 +6,31 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>787</width>
-    <height>385</height>
+    <width>696</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTreeView" name="treeView">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>351</width>
-      <height>221</height>
+      <x>10</x>
+      <y>0</y>
+      <width>681</width>
+      <height>381</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QTableView" name="tableView">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>20</y>
-      <width>321</width>
-      <height>221</height>
-     </rect>
+    <property name="currentIndex">
+     <number>0</number>
     </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Свойства проекта</string>
+     </attribute>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -40,7 +38,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>787</width>
+     <width>696</width>
      <height>26</height>
     </rect>
    </property>
@@ -48,11 +46,19 @@
     <property name="title">
      <string>Файл</string>
     </property>
+    <addaction name="action_3"/>
+    <addaction name="action_4"/>
+    <addaction name="action_5"/>
+    <addaction name="action_6"/>
+    <addaction name="action_Excel"/>
+    <addaction name="action_7"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
      <string>Справочник</string>
     </property>
+    <addaction name="openReference"/>
+    <addaction name="closeReference"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -66,6 +72,46 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="openReference">
+   <property name="text">
+    <string>Открыть</string>
+   </property>
+  </action>
+  <action name="closeReference">
+   <property name="text">
+    <string>Закрыть</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>Новый проект...</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>Открыть проект...</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>Сохранить проект...</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="text">
+    <string>Сохранить как...</string>
+   </property>
+  </action>
+  <action name="action_Excel">
+   <property name="text">
+    <string>Экспорт в Excel</string>
+   </property>
+  </action>
+  <action name="action_7">
+   <property name="text">
+    <string>Выход</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

@@ -64,6 +64,8 @@ class TreeModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
+    QString category_products_query;
+     TreeItem *rootItem;
     explicit TreeModel(QObject *parent = 0);
     ~TreeModel();
 
@@ -82,10 +84,11 @@ private:
     void setupChilds(TreeItem *parent);
     int readSqlStatements();
 
-    TreeItem *rootItem;
+
     Database* db;
     QString parent_category_query;
     QString category_by_parent_query;
+
 };
 //! [0]
 

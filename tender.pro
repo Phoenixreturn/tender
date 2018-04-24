@@ -28,13 +28,15 @@ SOURCES += \
         mainwindow.cpp \
     database.cpp \
     treeitem.cpp \
-    treemodel.cpp
+    treemodel.cpp \
+    customcombobox.cpp
 
 HEADERS += \
         mainwindow.h \
     database.h \
     treeitem.h \
-    treemodel.h
+    treemodel.h \
+    customcombobox.h
 
 FORMS += \
         mainwindow.ui

@@ -22,6 +22,18 @@ void TreeItem::appendChild(TreeItem *item)
 {
     m_childItems.append(item);
 }
+
+bool TreeItem::removeChild(TreeItem *child)
+{
+    int i = 0;
+    foreach(TreeItem *temp, m_childItems) {
+        if(temp->getId() == child->getId()) {
+         break;
+        }
+        i++;
+    }
+    m_childItems.removeAt(i);
+}
 //! [2]
 
 //! [3]

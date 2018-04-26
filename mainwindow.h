@@ -44,12 +44,16 @@ private:
     QPushButton *productAdd;
     QPushButton *productDelete;
     QItemSelectionModel *selectionModel;
+    QMenu *refContextMenu;
+    QAction *sampleAction;
     void createReferenceTab();
 private slots:
     void openReference(bool ac);
     void closeReference(bool ac);
     void selection(QItemSelection, QItemSelection);
     void setTableModelData(int id);
+    void insertRowToTreeModel(bool);
+    void removeRowFromTreeModel(bool);
 };
 
 #endif // MAINWINDOW_H

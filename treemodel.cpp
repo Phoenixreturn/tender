@@ -29,6 +29,42 @@ int TreeModel::columnCount(const QModelIndex &parent) const
         return rootItem->columnCount();
 }
 
+bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    return true;
+}
+
+bool TreeModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    QList<QVariant> data;
+    data.append(QVariant("string"));
+    data.append(QVariant("string"));
+    TreeItem* child = new TreeItem(data, 12, rootItem);
+    if(child) {
+        createIndex(row, 0, child);
+    }
+    beginInsertRows(parent, 1, 1);
+    rootItem->appendChild(child);
+    endInsertRows();
+}
+
+bool TreeModel::removeRows(int row,int count, const QModelIndex &parent)
+{
+    QModelIndex temp = index(row,0,parent);
+    TreeItem* tempItem = static_cast<TreeItem*>(temp.internalPointer());
+    if(!parent.isValid()) {
+        beginRemoveRows(temp.parent(), temp.row(), temp.row());
+        rootItem->removeChild(tempItem);
+        endRemoveRows();
+        return true;
+    }
+    beginRemoveRows(temp.parent(), temp.row(), temp.row());
+    TreeItem* parentItem = static_cast<TreeItem*>(parent.internalPointer());
+    parentItem->removeChild(tempItem);
+    endRemoveRows();
+    return true;
+}
+
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -47,7 +83,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    return QAbstractItemModel::flags(index);
+    return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
 }
 
 QVariant TreeModel::headerData(int section, Qt::Orientation orientation,

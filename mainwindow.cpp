@@ -13,6 +13,10 @@ MainWindow::MainWindow(QWidget *parent) :
     createReferenceTab();
     ui->setupUi(this);
     combo = new CustomCombobox(ui->tabWidget->currentWidget());
+    refContextMenu = new QMenu(treeView);
+    treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
+    sampleAction = new QAction("Sample Action", refContextMenu);
+    treeView->addAction(sampleAction);
     treeView->setModel(treeModel);
     tableView->setModel(tableModel);
     selectionModel = treeView->selectionModel();
@@ -110,6 +114,9 @@ void MainWindow::createReferenceTab()
     categoryDelete->setText(QApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
     productAdd->setText(QApplication::translate("MainWindow", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214", nullptr));
     productDelete->setText(QApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
+
+    connect(categoryAdd, SIGNAL(clicked(bool)), this, SLOT(insertRowToTreeModel(bool)));
+    connect(categoryDelete, SIGNAL(clicked(bool)), this, SLOT(removeRowFromTreeModel(bool)));
 }
 
 void MainWindow::openReference(bool ac)
@@ -133,6 +140,8 @@ void MainWindow::selection(QItemSelection selected, QItemSelection deselected)
         tableModel->clear();
         setTableModelData(treeTemp->getId());
     }
+    this->categoryAdd->setEnabled(true);
+    this->categoryDelete->setEnabled(true);
 }
 
 void MainWindow::setTableModelData(int id)
@@ -148,4 +157,18 @@ void MainWindow::setTableModelData(int id)
         items.append(new QStandardItem(category_products_statement.value(5).toString()));
         tableModel->appendRow(items);
     }
+}
+
+void MainWindow::insertRowToTreeModel(bool)
+{
+    TreeItem *item = static_cast<TreeItem *>(treeView->currentIndex().internalPointer());
+    treeModel->insertRows(0,1, QModelIndex());
+}
+
+void MainWindow::removeRowFromTreeModel(bool)
+{
+    QModelIndex currentIndex = treeView->currentIndex();
+    TreeItem *childItem = static_cast<TreeItem*>(currentIndex.internalPointer());
+    QModelIndex parentIndex = currentIndex.parent();
+    treeModel->removeRows(currentIndex.row(), 1, parentIndex);
 }

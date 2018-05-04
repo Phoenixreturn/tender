@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     treeView->setModel(treeModel);
     tableView->setModel(tableModel);
     selectionModel = treeView->selectionModel();
+    selectionTableModel = tableView->selectionModel();
     combo->setModel(treeModel);
     combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
     combo->setMinimumWidth(200);
@@ -27,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(selection(QItemSelection,QItemSelection)));
+    connect(selectionTableModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(selectionTable(QItemSelection,QItemSelection)));
     connect(ui->openReference,SIGNAL(triggered(bool)),this, SLOT(openReference(bool)));
     connect(ui->closeReference,SIGNAL(triggered(bool)),this, SLOT(closeReference(bool)));
 }
@@ -40,7 +43,6 @@ void MainWindow::createReferenceTab()
 {
     horizontalLayoutWidget = new QWidget();
     horizontalLayoutWidget->setObjectName(QStringLiteral("horizontalLayoutWidget"));
-    horizontalLayoutWidget->setGeometry(QRect(30, 92, 651, 341));
     horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
     horizontalLayout->setSpacing(6);
     horizontalLayout->setContentsMargins(11, 11, 11, 11);
@@ -51,7 +53,7 @@ void MainWindow::createReferenceTab()
     verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
     treeView = new QTreeView(horizontalLayoutWidget);
     treeView->setObjectName(QStringLiteral("treeView"));
-
+    treeView->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     verticalLayout->addWidget(treeView);
 
     categoryAdd = new QPushButton(horizontalLayoutWidget);
@@ -72,18 +74,14 @@ void MainWindow::createReferenceTab()
 
     verticalLayout->addWidget(categoryDelete);
 
-
     horizontalLayout->addLayout(verticalLayout);
-
-    horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    horizontalLayout->addItem(horizontalSpacer);
 
     verticalLayout_2 = new QVBoxLayout();
     verticalLayout_2->setSpacing(6);
     verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
     tableView = new QTableView(horizontalLayoutWidget);
     tableView->setObjectName(QStringLiteral("tableView"));
+    tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     verticalLayout_2->addWidget(tableView);
 
@@ -117,6 +115,9 @@ void MainWindow::createReferenceTab()
 
     connect(categoryAdd, SIGNAL(clicked(bool)), this, SLOT(insertRowToTreeModel(bool)));
     connect(categoryDelete, SIGNAL(clicked(bool)), this, SLOT(removeRowFromTreeModel(bool)));
+
+    connect(productAdd, SIGNAL(clicked(bool)), this, SLOT(insertProductToTable(bool)));
+    connect(productDelete, SIGNAL(clicked(bool)), this, SLOT(removeProductFromTable(bool)));
 }
 
 void MainWindow::openReference(bool ac)
@@ -142,6 +143,12 @@ void MainWindow::selection(QItemSelection selected, QItemSelection deselected)
     }
     this->categoryAdd->setEnabled(true);
     this->categoryDelete->setEnabled(true);
+}
+
+void MainWindow::selectionTable(QItemSelection selected, QItemSelection deselected)
+{
+    this->productAdd->setEnabled(true);
+    this->productDelete->setEnabled(true);
 }
 
 void MainWindow::setTableModelData(int id)
@@ -171,4 +178,15 @@ void MainWindow::removeRowFromTreeModel(bool)
     TreeItem *childItem = static_cast<TreeItem*>(currentIndex.internalPointer());
     QModelIndex parentIndex = currentIndex.parent();
     treeModel->removeRows(currentIndex.row(), 1, parentIndex);
+}
+
+void MainWindow::insertProductToTable(bool)
+{
+    tableModel->insertRow(0);
+}
+
+void MainWindow::removeProductFromTable(bool)
+{
+    QModelIndex currentIndex = tableView->currentIndex();
+    tableModel->removeRow(currentIndex.row());
 }

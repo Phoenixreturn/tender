@@ -30,7 +30,11 @@ SOURCES += \
     treeitem.cpp \
     treemodel.cpp \
     customcombobox.cpp \
-    projectclass.cpp
+    projectclass.cpp \
+    comboboxdelegate.cpp \
+    pgqueryitemdelegate.cpp \
+    tableitem.cpp \
+    tablemodel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,7 +42,12 @@ HEADERS += \
     treeitem.h \
     treemodel.h \
     customcombobox.h \
-    projectclass.h
+    projectclass.h \
+    comboboxdelegate.h \
+    pgqueryitemdelegate.h \
+    tableitem.h \
+    tablemodel.h \
+    deselectabletreeview.h
 
 FORMS += \
         mainwindow.ui

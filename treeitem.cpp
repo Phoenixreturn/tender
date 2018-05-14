@@ -6,7 +6,13 @@ TreeItem::TreeItem(const QList<QVariant> &data, int id, TreeItem *parent)
 {
     this->m_parentItem = parent;
     this->m_itemData = data;
-    this->id = id;
+    if(id == -1) {
+        this->newFlag = true;
+        this->id = 0;
+    } else {
+        this->newFlag = false;
+        this->id = id;
+    }
 }
 //! [0]
 
@@ -61,6 +67,14 @@ int TreeItem::columnCount() const
 QVariant TreeItem::data(int column) const
 {
     return m_itemData.value(column);
+}
+
+void TreeItem::setData(int column, QVariant value)
+{
+    if(!value.toString().isEmpty()) {
+        m_itemData[column] = value;
+        newFlag = true;
+    }
 }
 //! [6]
 

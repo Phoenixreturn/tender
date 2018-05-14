@@ -5,5 +5,8 @@
     <qresource prefix="/icons">
         <file>add_icon.png</file>
         <file>delete_icon.png</file>
+        <file>refresh.png</file>
+        <file>save.png</file>
+        <file>open.png</file>
     </qresource>
 </RCC>

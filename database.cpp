@@ -22,5 +22,6 @@ bool Database::connectToDataBase()
     db.setDatabaseName(DATABASE_NAME);
     db.setUserName(USER_NAME);
     db.setPassword(PASSWORD);
+    db.setConnectOptions("MYSQL_OPT_RECONNECT=1");
     return db.open();
 }

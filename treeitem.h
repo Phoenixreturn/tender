@@ -68,11 +68,13 @@ public:
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
+    void setData(int column, QVariant value);
     int row() const;
     int getId() const;
     TreeItem *parentItem();
 
 private:
+    bool newFlag;
     QList<TreeItem*> m_childItems;
     QList<QVariant> m_itemData;
     int id;

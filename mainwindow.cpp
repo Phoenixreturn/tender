@@ -1,6 +1,10 @@
 #include "mainwindow.h"
 #include "treeitem.h"
 #include "ui_mainwindow.h"
+#include "comboboxdelegate.h"
+#include "pgqueryitemdelegate.h"
+#include "deselectabletreeview.h"
+#include <QProgressBar>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,9 +13,15 @@ MainWindow::MainWindow(QWidget *parent) :
     db = &Database::Instance();
     bool ok = db->connectToDataBase();
     treeModel = new TreeModel();
-    tableModel = new QStandardItemModel();
+    tableModel = new TableModel();
     createReferenceTab();
     ui->setupUi(this);
+    progressBar = new QProgressBar(ui->statusBar);
+    progressBar->setAlignment(Qt::AlignRight);
+    progressBar->setMaximumSize(90, 12);
+    ui->statusBar->addPermanentWidget(progressBar);
+    progressBar->setValue(50);
+    progressBar->hide();
     combo = new CustomCombobox(ui->tabWidget->currentWidget());
     refContextMenu = new QMenu(treeView);
     treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -19,12 +29,15 @@ MainWindow::MainWindow(QWidget *parent) :
     treeView->addAction(sampleAction);
     treeView->setModel(treeModel);
     tableView->setModel(tableModel);
+    PGQueryItemDelegate* pgquery = new PGQueryItemDelegate(tableView);
+    tableView->setItemDelegate(pgquery);
     selectionModel = treeView->selectionModel();
     selectionTableModel = tableView->selectionModel();
     combo->setModel(treeModel);
     combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
     combo->setMinimumWidth(200);
     combo->show();
+    addToolBar(Qt::TopToolBarArea, createToolbar());
 
     connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(selection(QItemSelection,QItemSelection)));
@@ -39,6 +52,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+QToolBar *MainWindow::createToolbar()
+{
+   QToolBar* ptb = new QToolBar("Linker ToolBar");
+   ptb->setMovable(false);
+
+   ptb->addAction(QIcon(":/icons/open.png"), "1", this, SLOT(slotNoImpl()));
+   ptb->addSeparator();
+   ptb->addAction(QIcon(":/icons/save.png"), "2", this, SLOT(slotNoImpl()));
+   ptb->addAction(QIcon(":/icons/refresh.png"), "3", this, SLOT(slotNoImpl()));
+   ptb->addSeparator();
+
+   return ptb;
+}
+
 void MainWindow::createReferenceTab()
 {
     horizontalLayoutWidget = new QWidget();
@@ -51,7 +78,7 @@ void MainWindow::createReferenceTab()
     verticalLayout = new QVBoxLayout();
     verticalLayout->setSpacing(6);
     verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-    treeView = new QTreeView(horizontalLayoutWidget);
+    treeView = new DeselectableTreeView(horizontalLayoutWidget);
     treeView->setObjectName(QStringLiteral("treeView"));
     treeView->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     verticalLayout->addWidget(treeView);
@@ -122,6 +149,7 @@ void MainWindow::createReferenceTab()
 
 void MainWindow::openReference(bool ac)
 {
+    progressBar->show();
     referenceIndex = ui->tabWidget->addTab(horizontalLayoutWidget, "Справочник");
     ui->tabWidget->setCurrentIndex(referenceIndex);
 }
@@ -138,8 +166,7 @@ void MainWindow::selection(QItemSelection selected, QItemSelection deselected)
         QModelIndex temp = indexes.first();
         selected.removeFirst();
         TreeItem* treeTemp = static_cast<TreeItem*>(temp.internalPointer());
-        tableModel->clear();
-        setTableModelData(treeTemp->getId());
+//        tableModel->clear();
     }
     this->categoryAdd->setEnabled(true);
     this->categoryDelete->setEnabled(true);
@@ -151,25 +178,9 @@ void MainWindow::selectionTable(QItemSelection selected, QItemSelection deselect
     this->productDelete->setEnabled(true);
 }
 
-void MainWindow::setTableModelData(int id)
-{
-    QSqlQuery category_products_statement(db->db);
-    category_products_statement.prepare(treeModel->category_products_query);
-    category_products_statement.bindValue(0, id);
-    category_products_statement.exec();
-    while(category_products_statement.next())
-    {
-        QList<QStandardItem *> items;
-        items.append(new QStandardItem(category_products_statement.value(3).toString()));
-        items.append(new QStandardItem(category_products_statement.value(5).toString()));
-        tableModel->appendRow(items);
-    }
-}
-
 void MainWindow::insertRowToTreeModel(bool)
 {
-    TreeItem *item = static_cast<TreeItem *>(treeView->currentIndex().internalPointer());
-    treeModel->insertRows(0,1, QModelIndex());
+    treeModel->insertRows(0,1, treeView->currentIndex());
 }
 
 void MainWindow::removeRowFromTreeModel(bool)
@@ -187,6 +198,11 @@ void MainWindow::insertProductToTable(bool)
 
 void MainWindow::removeProductFromTable(bool)
 {
-    QModelIndex currentIndex = tableView->currentIndex();
-    tableModel->removeRow(currentIndex.row());
+    QMessageBox::StandardButton reply;
+     reply = QMessageBox::question(this, "Подтвердить удаление", "Удалить?",
+                                   QMessageBox::Yes|QMessageBox::No);
+     if (reply == QMessageBox::Yes) {
+         QModelIndex currentIndex = tableView->currentIndex();
+         tableModel->removeRow(currentIndex.row());
+     }
 }

@@ -31,21 +31,40 @@ int TreeModel::columnCount(const QModelIndex &parent) const
 
 bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    return true;
+    if (index.isValid() && role == Qt::EditRole) {
+        int row = index.row();
+        TreeItem* item = static_cast<TreeItem*>(index.internalPointer());
+        item->setData(0, value);
+        emit(dataChanged(index, index));
+        return true;
+    }
+    return false;
 }
 
 bool TreeModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     QList<QVariant> data;
-    data.append(QVariant("string"));
-    data.append(QVariant("string"));
-    TreeItem* child = new TreeItem(data, 12, rootItem);
+    data.append(QVariant("..."));
+    data.append(QVariant("..."));
+    TreeItem* child = NULL;
+    TreeItem* parentItem = NULL;
+    if(parent.isValid()) {
+        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+        child = new TreeItem(data, -1, parentItem);
+    } else {
+        child = new TreeItem(data, -1, rootItem);
+    }
     if(child) {
         createIndex(row, 0, child);
     }
     beginInsertRows(parent, 1, 1);
-    rootItem->appendChild(child);
-    endInsertRows();
+    if(parentItem != NULL) {
+        parentItem->appendChild(child);
+    } else {
+        rootItem->appendChild(child);
+    }
+     endInsertRows();
+
 }
 
 bool TreeModel::removeRows(int row,int count, const QModelIndex &parent)
@@ -192,12 +211,10 @@ int TreeModel::readSqlStatements()
              parent_category_query = lst.last();
         }
         if(!QString::compare(lst.first(), "category_by_parent", Qt::CaseInsensitive)) {
-             category_by_parent_query = lst.last();
-             category_by_parent_query.replace(QString("%"), QString("=?"));
+             category_by_parent_query = lst.last();          
         }
         if(!QString::compare(lst.first(), "category_products", Qt::CaseInsensitive)) {
-             category_products_query = lst.last();
-             category_products_query.replace(QString("%"), QString("=?"));
+             category_products_query = lst.last();            
         }
     }
 

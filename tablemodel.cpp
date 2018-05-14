@@ -5,11 +5,10 @@ TableModel::TableModel(QObject *parent)
     db = &Database::Instance();
     bool ok = db->connectToDataBase();
     QList<QVariant> headerTable;
-    headerTable.append("svd");
-    headerTable.append("dsfvsdfvs");
+    headerTable.append("Порядковый номер");
+    headerTable.append("Наименование");
     headers = new TableItem(headerTable);
     readSqlStatements();
-    setupModelData(2);
 }
 
 TableModel::~TableModel()
@@ -50,12 +49,14 @@ QModelIndex TableModel::index(int row, int column, const QModelIndex &parent) co
 {
     if (!hasIndex(row, column, parent))
         return QModelIndex();
-
-    TableItem* item = tableItems.at(row);
-//    if(item)
+    TableItem* item = NULL;
+    if(0 <= row < tableItems.size()) {
+        item = tableItems.at(row);
+    }
+    if(item)
         return createIndex(row, column, item);
-//    else
-//        return QModelIndex();
+    else
+        return QModelIndex();
 }
 
 QModelIndex TableModel::parent(const QModelIndex &index) const
@@ -77,7 +78,7 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 {
     if (index.isValid() && role == Qt::EditRole) {
         TableItem* item = static_cast<TableItem*>(index.internalPointer());
-        item->setData(0, value);
+        item->setData(index.column(), value);
         emit(dataChanged(index, index));
         return true;
     }
@@ -102,9 +103,9 @@ bool TableModel::insertRows(int row, int count, const QModelIndex &parent)
 bool TableModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     QModelIndex temp = index(row,0,parent);
-    TableItem* tempItem = static_cast<TableItem*>(temp.internalPointer());
     if(!parent.isValid()) {
         beginRemoveRows(temp.parent(), temp.row(), temp.row());
+        tableItems.removeAt(row);
         endRemoveRows();
         return true;
     }
@@ -113,18 +114,27 @@ bool TableModel::removeRows(int row, int count, const QModelIndex &parent)
 
 void TableModel::setupModelData(int category)
 {
+    this->emptyModelData();
     TableItem *temp;
-    QSqlQuery parent_query(db->db);
-    parent_query.prepare(category_products_query);
-    parent_query.bindValue(0, 2);
-    bool ok =  parent_query.exec();
-    while(parent_query.next())
+    QSqlQuery products_query(db->db);
+    products_query.prepare(category_products_query);
+    products_query.bindValue(0, category);
+    products_query.exec();
+    while(products_query.next())
     {
         QList<QVariant> tempData;
-        tempData << QVariant(parent_query.value(0)) << QVariant(parent_query.value(1));
+        tempData << QVariant(products_query.value(0)) << QVariant(products_query.value(1));
         temp = new TableItem(tempData);
         tableItems.append(temp);
     }
+}
+
+void TableModel::emptyModelData()
+{
+    beginResetModel();
+    tableItems.clear();
+    categoryId = -1;
+    endResetModel();
 }
 
 int TableModel::readSqlStatements()

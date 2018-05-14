@@ -166,7 +166,7 @@ void MainWindow::selection(QItemSelection selected, QItemSelection deselected)
         QModelIndex temp = indexes.first();
         selected.removeFirst();
         TreeItem* treeTemp = static_cast<TreeItem*>(temp.internalPointer());
-//        tableModel->clear();
+        tableModel->setupModelData(treeTemp->getId());
     }
     this->categoryAdd->setEnabled(true);
     this->categoryDelete->setEnabled(true);

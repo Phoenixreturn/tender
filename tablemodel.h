@@ -24,7 +24,8 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-     void setupModelData(int category);
+    void setupModelData(int category);
+    void emptyModelData();
 private:   
     int readSqlStatements();
 

@@ -5,9 +5,9 @@ TableItem::TableItem(const QList<QVariant> &data, int id)
 {
     tableItem_data = data;
     if(id != 0) {
-        this->categoryId = id;
+        newFlag = true;
     } else {
-        this->categoryId = id;
+        newFlag = false;
     }
 }
 
@@ -32,9 +32,4 @@ void TableItem::setData(int column, QVariant value)
         tableItem_data[column] = value;
         newFlag = true;
     }
-}
-
-int TableItem::getCategoryId() const
-{
-    return categoryId;
 }

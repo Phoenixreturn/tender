@@ -12,11 +12,9 @@ public:
     int columnCount() const;
     QVariant data(int column) const;
     void setData(int column, QVariant value);
-    int getCategoryId() const;
 private:
     bool newFlag;
     QList<QVariant> tableItem_data;
-    int categoryId;
 };
 
 #endif // TABLEITEM_H

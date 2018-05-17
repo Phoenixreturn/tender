@@ -86,10 +86,24 @@ private:
     void setupChilds(TreeItem *parent);
     int readSqlStatements();
 
+    int createTreeItem(TreeItem* item);
+    void updateTreeItem(TreeItem* item);
+    void deleteTreeItem(TreeItem* item);
+
 
     Database* db;
     QString parent_category_query;
     QString category_by_parent_query;
+    QString add_category;
+    QString update_category;
+    QString create_category;
+    QString delete_category;
+    QString contains_category_in_mapping;
+    QString remove_mapping;
+    QString update_mapping;
+    void recursiveUpdate(TreeItem* item);
+public slots:
+    void updateModel();
 
 };
 //! [0]

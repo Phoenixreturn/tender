@@ -32,6 +32,8 @@ public:
 
     QToolBar* createToolbar();
 
+signals:
+   void updateModels();
 private:
     Ui::MainWindow *ui;
     TreeModel* treeModel;
@@ -67,6 +69,7 @@ private slots:
 
     void insertProductToTable(bool);
     void removeProductFromTable(bool);
+    void update();
 };
 
 #endif // MAINWINDOW_H

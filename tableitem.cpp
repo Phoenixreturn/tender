@@ -1,13 +1,14 @@
 #include "tableitem.h"
 
 
-TableItem::TableItem(const QList<QVariant> &data, int id)
+TableItem::TableItem(const QList<QVariant> &data, bool created)
 {
     tableItem_data = data;
-    if(id != 0) {
-        newFlag = true;
-    } else {
-        newFlag = false;
+    if(created) {
+        state = New;
+    } else {        
+        state = Default;
+        oldName = data.at(0).toString();
     }
 }
 
@@ -30,6 +31,18 @@ void TableItem::setData(int column, QVariant value)
 {
     if(!value.toString().isEmpty()) {
         tableItem_data[column] = value;
-        newFlag = true;
+        if(state != New) {
+            state = Changed;
+        }
     }
+}
+
+void TableItem::setState(TableItem::ObjectStates state)
+{
+    this->state = state;
+}
+
+TableItem::ObjectStates TableItem::getState()
+{
+    return state;
 }

@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     db = &Database::Instance();
-    bool ok = db->connectToDataBase();
+    db->connectToDataBase();
     treeModel = new TreeModel();
     tableModel = new TableModel();
     createReferenceTab();
@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     progressBar->setMaximumSize(90, 12);
     ui->statusBar->addPermanentWidget(progressBar);
     progressBar->setValue(50);
+    progressBar->setMaximum(50000);
     progressBar->hide();
     combo = new CustomCombobox(ui->tabWidget->currentWidget());
     refContextMenu = new QMenu(treeView);
@@ -45,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(selectionTable(QItemSelection,QItemSelection)));
     connect(ui->openReference,SIGNAL(triggered(bool)),this, SLOT(openReference(bool)));
     connect(ui->closeReference,SIGNAL(triggered(bool)),this, SLOT(closeReference(bool)));
+    connect(this, SIGNAL(updateModels()), treeModel, SLOT(updateModel()));
+    connect(this, SIGNAL(updateModels()), tableModel, SLOT(updateModel()));
 }
 
 MainWindow::~MainWindow()
@@ -59,7 +62,7 @@ QToolBar *MainWindow::createToolbar()
 
    ptb->addAction(QIcon(":/icons/open.png"), "1", this, SLOT(slotNoImpl()));
    ptb->addSeparator();
-   ptb->addAction(QIcon(":/icons/save.png"), "2", this, SLOT(slotNoImpl()));
+   ptb->addAction(QIcon(":/icons/save.png"), "2", this, SLOT(update()));
    ptb->addAction(QIcon(":/icons/refresh.png"), "3", this, SLOT(slotNoImpl()));
    ptb->addSeparator();
 
@@ -199,10 +202,18 @@ void MainWindow::insertProductToTable(bool)
 void MainWindow::removeProductFromTable(bool)
 {
     QMessageBox::StandardButton reply;
+    ui->tabWidget->setEnabled(false);
      reply = QMessageBox::question(this, "Подтвердить удаление", "Удалить?",
                                    QMessageBox::Yes|QMessageBox::No);
      if (reply == QMessageBox::Yes) {
+         ui->tabWidget->setEnabled(true);
          QModelIndex currentIndex = tableView->currentIndex();
          tableModel->removeRow(currentIndex.row());
      }
+}
+
+void MainWindow::update()
+{
+//    ui->tabWidget->setEnabled(false);
+    emit updateModels();
 }

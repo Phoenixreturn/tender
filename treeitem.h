@@ -53,29 +53,46 @@
 
 #include <QList>
 #include <QVariant>
+#include <QObject>
 
 //! [0]
-class TreeItem
+class TreeItem : public QObject
 {
+    Q_OBJECT
+    Q_ENUMS(ObjectStates)
 public:
-    explicit TreeItem(const QList<QVariant> &data, int id=0, TreeItem *parentItem = 0);
+    enum ObjectStates
+        {
+           Default,
+           Changed,
+           Deleted,
+           New
+        };
+    explicit TreeItem(const QList<QVariant> &data, int id = -1, TreeItem *parentItem = 0);
     ~TreeItem();
 
     void appendChild(TreeItem *child);
-    bool removeChild(TreeItem *child);
+    bool removeChild(int row);
 
     TreeItem *child(int row);
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
     void setData(int column, QVariant value);
+    void setState(ObjectStates state);
+    ObjectStates getState();
     int row() const;
     int getId() const;
+    void setId(int id);
+    QList<TreeItem *> getChilds();
     TreeItem *parentItem();
-
-private:
-    bool newFlag;
+    void removeFromDBDeletedItems();
+    void updateFromDBItems();
+    void addToDBNewItems();
+private:    
+    ObjectStates states;
     QList<TreeItem*> m_childItems;
+    QList<TreeItem*> m_deletedChildItems;
     QList<QVariant> m_itemData;
     int id;
     TreeItem *m_parentItem;

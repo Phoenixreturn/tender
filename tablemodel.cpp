@@ -3,10 +3,12 @@
 TableModel::TableModel(QObject *parent)
 {
     db = &Database::Instance();
-    bool ok = db->connectToDataBase();
+    db->connectToDataBase();
     QList<QVariant> headerTable;
-    headerTable.append("Порядковый номер");
     headerTable.append("Наименование");
+    headerTable.append("Единица");
+    headerTable.append("Цена");
+    headerTable.append("Валюта");
     headers = new TableItem(headerTable);
     readSqlStatements();
 }
@@ -88,11 +90,14 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 bool TableModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     QList<QVariant> data;
+    //число элементов списка должно быть таким же как число столбцов
+    data.append(QVariant("..."));
+    data.append(QVariant("..."));
     data.append(QVariant("..."));
     data.append(QVariant("..."));
     TableItem* child = NULL;
     if(!parent.isValid()) {
-         child = new TableItem(data, -1);
+         child = new TableItem(data, true);
          createIndex(row, 0, child);
          beginInsertRows(parent, 1, 1);
          tableItems.append(child);
@@ -104,7 +109,9 @@ bool TableModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     QModelIndex temp = index(row,0,parent);
     if(!parent.isValid()) {
-        beginRemoveRows(temp.parent(), temp.row(), temp.row());
+        beginRemoveRows(temp.parent(), temp.row(), temp.row());       
+        tableItems[row]->setState(TableItem::Deleted);
+        deletedItems.append(tableItems[row]);
         tableItems.removeAt(row);
         endRemoveRows();
         return true;
@@ -115,17 +122,20 @@ bool TableModel::removeRows(int row, int count, const QModelIndex &parent)
 void TableModel::setupModelData(int category)
 {
     this->emptyModelData();
-    TableItem *temp;
-    QSqlQuery products_query(db->db);
-    products_query.prepare(category_products_query);
-    products_query.bindValue(0, category);
-    products_query.exec();
-    while(products_query.next())
-    {
-        QList<QVariant> tempData;
-        tempData << QVariant(products_query.value(0)) << QVariant(products_query.value(1));
-        temp = new TableItem(tempData);
-        tableItems.append(temp);
+    if(category != -1) {
+        TableItem *temp;
+        QSqlQuery products_query(db->db);
+        products_query.prepare(category_products_query);
+        products_query.bindValue(0, category);
+        products_query.exec();
+        while(products_query.next())
+        {
+            QList<QVariant> tempData;
+            tempData << QVariant(products_query.value(3)) << QVariant(products_query.value(4))
+                     << QVariant(products_query.value(5)) << QVariant(products_query.value(6));
+            temp = new TableItem(tempData);
+            tableItems.append(temp);
+        }
     }
 }
 
@@ -164,4 +174,24 @@ int TableModel::readSqlStatements()
     }
 
     file.close();
+}
+
+void TableModel::updateModel()
+{
+//    this->emptyModelData();
+//    if(category != -1) {
+//        TableItem *temp;
+//        QSqlQuery products_query(db->db);
+//        products_query.prepare(category_products_query);
+//        products_query.bindValue(0, category);
+//        products_query.exec();
+//        while(products_query.next())
+//        {
+//            QList<QVariant> tempData;
+//            tempData << QVariant(products_query.value(3)) << QVariant(products_query.value(4))
+//                     << QVariant(products_query.value(5)) << QVariant(products_query.value(6));
+//            temp = new TableItem(tempData);
+//            tableItems.append(temp);
+//        }
+//    }
 }

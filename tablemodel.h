@@ -24,19 +24,27 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-    void setupModelData(int category);
+    void setupModelData(int category = -1);
     void emptyModelData();
 private:   
     int readSqlStatements();
 
     Database* db;
     QList<TableItem*> tableItems;
+    QList<TableItem*> deletedItems;
     TableItem* headers;
     int categoryId;
 
     QString parent_category_query;
     QString category_by_parent_query;
     QString category_products_query;
+    QString add_category;
+    QString add_product;
+    QString remove_mapping;
+    QString contains_category_in_mapping;
+    QString contains_product_in_mapping;
+public slots:
+    void updateModel();
 };
 
 #endif // TABLEMODEL_H

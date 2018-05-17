@@ -2,18 +2,32 @@
 #define TABLEITEM_H
 
 #include <QList>
+#include <QObject>
 
-class TableItem
+class TableItem : public QObject
 {
+    Q_OBJECT
+    Q_ENUMS(ObjectStates)
 public:
-    explicit TableItem(const QList<QVariant> &data, int id=0);
+    enum ObjectStates
+        {
+           Default,
+           Changed,
+           Deleted,
+           New
+        };
+    explicit TableItem(const QList<QVariant> &data, bool created = false);
     ~TableItem();
 
     int columnCount() const;
     QVariant data(int column) const;
     void setData(int column, QVariant value);
-private:
-    bool newFlag;
+    void setState(ObjectStates state);
+    ObjectStates getState();
+
+private:    
+    ObjectStates state;
+    QString oldName;
     QList<QVariant> tableItem_data;
 };
 

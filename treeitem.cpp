@@ -7,10 +7,10 @@ TreeItem::TreeItem(const QList<QVariant> &data, int id, TreeItem *parent)
     this->m_parentItem = parent;
     this->m_itemData = data;
     if(id == -1) {
-        this->newFlag = true;
-        this->id = 0;
+        this->states = New;
+        this->id = id;
     } else {
-        this->newFlag = false;
+        this->states = Default;
         this->id = id;
     }
 }
@@ -20,6 +20,7 @@ TreeItem::TreeItem(const QList<QVariant> &data, int id, TreeItem *parent)
 TreeItem::~TreeItem()
 {
     qDeleteAll(m_childItems);
+    qDeleteAll(m_deletedChildItems);
 }
 //! [1]
 
@@ -29,16 +30,11 @@ void TreeItem::appendChild(TreeItem *item)
     m_childItems.append(item);
 }
 
-bool TreeItem::removeChild(TreeItem *child)
+bool TreeItem::removeChild(int row)
 {
-    int i = 0;
-    foreach(TreeItem *temp, m_childItems) {
-        if(temp->getId() == child->getId()) {
-         break;
-        }
-        i++;
-    }
-    m_childItems.removeAt(i);
+    m_childItems[row]->setState(TreeItem::Deleted);
+    m_deletedChildItems.append(m_childItems[row]);
+    m_childItems.removeAt(row);
 }
 //! [2]
 
@@ -73,8 +69,20 @@ void TreeItem::setData(int column, QVariant value)
 {
     if(!value.toString().isEmpty()) {
         m_itemData[column] = value;
-        newFlag = true;
+        if(states != New) {
+            states = Changed;
+        }
     }
+}
+
+void TreeItem::setState(TreeItem::ObjectStates state)
+{
+    this->states = state;
+}
+
+TreeItem::ObjectStates TreeItem::getState()
+{
+    return states;
 }
 //! [6]
 
@@ -97,5 +105,15 @@ int TreeItem::row() const
 int TreeItem::getId() const
 {
     return id;
+}
+
+void TreeItem::setId(int id)
+{
+    this->id = id;
+}
+
+QList<TreeItem *> TreeItem::getChilds()
+{
+    return this->m_childItems;
 }
 //! [8]

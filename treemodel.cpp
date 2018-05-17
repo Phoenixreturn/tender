@@ -7,7 +7,7 @@ TreeModel::TreeModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
     db = &Database::Instance();
-    bool ok = db->connectToDataBase();
+    db->connectToDataBase();
     QList<QVariant> rootData;
     rootData << "name";
     rootItem = new TreeItem(rootData);
@@ -70,16 +70,15 @@ bool TreeModel::insertRows(int row, int count, const QModelIndex &parent)
 bool TreeModel::removeRows(int row,int count, const QModelIndex &parent)
 {
     QModelIndex temp = index(row,0,parent);
-    TreeItem* tempItem = static_cast<TreeItem*>(temp.internalPointer());
     if(!parent.isValid()) {
         beginRemoveRows(temp.parent(), temp.row(), temp.row());
-        rootItem->removeChild(tempItem);
+        rootItem->removeChild(row);
         endRemoveRows();
         return true;
     }
     beginRemoveRows(temp.parent(), temp.row(), temp.row());
     TreeItem* parentItem = static_cast<TreeItem*>(parent.internalPointer());
-    parentItem->removeChild(tempItem);
+    parentItem->removeChild(row);
     endRemoveRows();
     return true;
 }
@@ -213,10 +212,90 @@ int TreeModel::readSqlStatements()
         if(!QString::compare(lst.first(), "category_by_parent", Qt::CaseInsensitive)) {
              category_by_parent_query = lst.last();          
         }
-        if(!QString::compare(lst.first(), "category_products", Qt::CaseInsensitive)) {
-             category_products_query = lst.last();            
+        if(!QString::compare(lst.first(), "add_category", Qt::CaseInsensitive)) {
+             add_category = lst.last();
+        }
+        if(!QString::compare(lst.first(), "update_category", Qt::CaseInsensitive)) {
+             update_category = lst.last();
+        }
+        if(!QString::compare(lst.first(), "create_category", Qt::CaseInsensitive)) {
+             create_category = lst.last();
+        }
+        if(!QString::compare(lst.first(), "delete_category", Qt::CaseInsensitive)) {
+             delete_category = lst.last();
+        }
+        if(!QString::compare(lst.first(), "contains_category_in_mapping", Qt::CaseInsensitive)) {
+             contains_category_in_mapping = lst.last();
+        }
+        if(!QString::compare(lst.first(), "remove_mapping", Qt::CaseInsensitive)) {
+             remove_mapping = lst.last();
+        }
+        if(!QString::compare(lst.first(), "update_mapping", Qt::CaseInsensitive)) {
+             update_mapping = lst.last();
         }
     }
 
     file.close();
+}
+
+int TreeModel::createTreeItem(TreeItem *item)
+{
+    QSqlQuery create_category(db->db);
+    create_category.prepare(this->create_category);
+    create_category.bindValue(0, item->data(0));
+    if(item->parentItem()->getId() != -1) {
+         create_category.bindValue(1, item->parentItem()->getId());
+    } else {
+        create_category.bindValue(1, QVariant(QVariant::Int));
+    }
+    create_category.bindValue(2, item->data(1));
+    create_category.exec();
+    int id = create_category.lastInsertId().toInt();
+
+    item->setId(id);
+
+    return id;
+}
+
+void TreeModel::updateTreeItem(TreeItem *item)
+{
+    QSqlQuery update_category(db->db);
+    update_category.prepare(this->update_category);
+    update_category.bindValue(0, item->data(0));
+    update_category.bindValue(1, item->data(1));
+    update_category.bindValue(2, item->getId());
+    update_category.exec();
+}
+
+void TreeModel::deleteTreeItem(TreeItem *item)
+{
+
+}
+
+void TreeModel::recursiveUpdate(TreeItem *item)
+{
+    foreach (TreeItem* child, item->getChilds()) {
+        switch(child->getState())   {
+        case TreeItem::New:
+            createTreeItem(child);
+            recursiveUpdate(child);
+            break;
+        case TreeItem::Changed:
+            updateTreeItem(child);
+            recursiveUpdate(child);
+            break;
+        case TreeItem::Deleted:
+            deleteTreeItem();
+            recursiveUpdate(child);
+            break;
+        default:
+            recursiveUpdate(child);
+            break;
+        }
+    }
+}
+
+void TreeModel::updateModel()
+{
+   this->recursiveUpdate(rootItem);
 }

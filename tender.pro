@@ -27,27 +27,29 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     database.cpp \
-    treeitem.cpp \
     treemodel.cpp \
     customcombobox.cpp \
     projectclass.cpp \
     comboboxdelegate.cpp \
     pgqueryitemdelegate.cpp \
-    tableitem.cpp \
-    tablemodel.cpp
+    tablemodel.cpp \
+    generalitem.cpp \
+    sqlstatements.cpp \
+    generalmodel.cpp
 
 HEADERS += \
         mainwindow.h \
     database.h \
-    treeitem.h \
     treemodel.h \
     customcombobox.h \
     projectclass.h \
     comboboxdelegate.h \
     pgqueryitemdelegate.h \
-    tableitem.h \
     tablemodel.h \
-    deselectabletreeview.h
+    deselectabletreeview.h \
+    generalitem.h \
+    sqlstatements.h \
+    generalmodel.h
 
 FORMS += \
         mainwindow.ui

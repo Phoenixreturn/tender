@@ -1,11 +1,21 @@
 #include "sqlstatements.h"
 
-SqlStatements::SqlStatements(QObject *parent) :
-    QObject(parent)
+SqlStatements &SqlStatements::Instance()
+{
+    static SqlStatements statements;
+    return statements;
+}
+
+SqlStatements::SqlStatements(QObject *parent)
 {
     db = &Database::Instance();
     db->connectToDataBase();
     readSqlStatements();
+}
+
+SqlStatements::~SqlStatements()
+{
+
 }
 
 int SqlStatements::readSqlStatements()
@@ -19,13 +29,6 @@ int SqlStatements::readSqlStatements()
         const QByteArray line = file.readLine();
         const QString str( line );
         const QStringList lst = str.split(QRegExp("=="));
-        if (lst.size() != 2) {
-            qDebug() << "error";
-            return -2;
-        }
-        if(!QString::compare(lst.first(), "parent_category", Qt::CaseInsensitive)) {
-             parent_category_query = lst.last();
-        }
         if(!QString::compare(lst.first(), "category_by_parent", Qt::CaseInsensitive)) {
              category_by_parent_query = lst.last();
         }

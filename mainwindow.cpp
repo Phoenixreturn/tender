@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "treeitem.h"
 #include "ui_mainwindow.h"
 #include "comboboxdelegate.h"
 #include "pgqueryitemdelegate.h"
@@ -13,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     db = &Database::Instance();
     db->connectToDataBase();
     treeModel = new TreeModel();
-    tableModel = new TableModel();
+    tableModel = new TableModel(-1);
     createReferenceTab();
     ui->setupUi(this);
     progressBar = new QProgressBar(ui->statusBar);
@@ -168,8 +167,9 @@ void MainWindow::selection(QItemSelection selected, QItemSelection deselected)
     if(indexes.size() > 0) {
         QModelIndex temp = indexes.first();
         selected.removeFirst();
-        TreeItem* treeTemp = static_cast<TreeItem*>(temp.internalPointer());
-        tableModel->setupModelData(treeTemp->getId());
+        GeneralItem* treeTemp = static_cast<GeneralItem*>(temp.internalPointer());
+        tableModel->setCategoryId(treeTemp->getId());
+        tableModel->setupModelData();
     }
     this->categoryAdd->setEnabled(true);
     this->categoryDelete->setEnabled(true);
@@ -189,7 +189,6 @@ void MainWindow::insertRowToTreeModel(bool)
 void MainWindow::removeRowFromTreeModel(bool)
 {
     QModelIndex currentIndex = treeView->currentIndex();
-    TreeItem *childItem = static_cast<TreeItem*>(currentIndex.internalPointer());
     QModelIndex parentIndex = currentIndex.parent();
     treeModel->removeRows(currentIndex.row(), 1, parentIndex);
 }

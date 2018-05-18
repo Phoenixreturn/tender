@@ -20,6 +20,7 @@ return categoryId;
 
 void TableModel::setupModelData()
 {     
+    beginResetModel();
     emptyModelData(rootItem);
     if(categoryId != -1) {
         GeneralItem *temp = NULL;
@@ -37,6 +38,7 @@ void TableModel::setupModelData()
             rootItem->appendChild(temp);
         }
     }
+    endResetModel();
 }
 
 void TableModel::setRootItem()

@@ -5,7 +5,9 @@ GeneralModel::GeneralModel(QObject *parent)
 {
     db = &Database::Instance();
     statements = &SqlStatements::Instance();
-    db->connectToDataBase();
+    if(!db->db.isOpen()) {
+        db->connectToDataBase();
+    }
 }
 
 GeneralModel::~GeneralModel()
@@ -47,7 +49,7 @@ QModelIndex GeneralModel::index(int row, int column, const QModelIndex &parent) 
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    GeneralItem *parentItem;
+    GeneralItem *parentItem = NULL;
 
     if (!parent.isValid())
         parentItem = rootItem;
@@ -186,11 +188,12 @@ void GeneralModel::emptyModelData(GeneralItem* item)
 {
     foreach (GeneralItem* child, item->getChildren()) {
         emptyModelData(child);
-    }
+    }    
     foreach (GeneralItem* child, item->getDeletedChildren()) {
         emptyModelData(child);
     }
-    if(item != rootItem) {
+    item->emptyLists();
+    if(item != rootItem) {        
         delete(item);
     }
 }

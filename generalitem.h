@@ -49,6 +49,7 @@ public:
     int createItem(GeneralItem* item);
     void updateItem(GeneralItem* item);
     void deleteItem(GeneralItem* item);
+    void emptyLists();
 private:
     ObjectStates state;
     int id;

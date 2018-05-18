@@ -53,7 +53,7 @@ void ReferenceWidget::createButtons()
     categoryDelete = new QPushButton(this);
     productAdd = new QPushButton(this);
     productDelete = new QPushButton(this);
-    categoryAdd->setEnabled(false);
+    categoryAdd->setEnabled(true);
     categoryDelete->setEnabled(false);
     productAdd->setEnabled(false);
     productDelete->setEnabled(false);

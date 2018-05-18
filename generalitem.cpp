@@ -139,3 +139,9 @@ void GeneralItem::deleteItem(GeneralItem *item)
 {
 
 }
+
+void GeneralItem::emptyLists()
+{
+    m_childs.clear();
+    m_deletedChilds.clear();
+}

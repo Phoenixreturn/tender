@@ -4,7 +4,9 @@ GeneralItem::GeneralItem(const QList<QVariant> &data, GeneralItem *parentItem, b
 {
     db = &Database::Instance();
     statements = &SqlStatements::Instance();
-    db->connectToDataBase();
+    if(!db->db.isOpen()) {
+        db->connectToDataBase();
+    }
     if(parentItem) {
         this->m_parentItem = parentItem;
     } else {

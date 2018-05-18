@@ -8,7 +8,7 @@ TreeModel::TreeModel(QObject *parent)
 }
 
 void TreeModel::setupModelData()
-{    
+{
     setupChildrenData(rootItem);
 }
 

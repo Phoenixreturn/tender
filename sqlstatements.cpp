@@ -9,7 +9,9 @@ SqlStatements &SqlStatements::Instance()
 SqlStatements::SqlStatements(QObject *parent)
 {
     db = &Database::Instance();
-    db->connectToDataBase();
+    if(!db->db.isOpen()) {
+            db->connectToDataBase();
+    }
     readSqlStatements();
 }
 

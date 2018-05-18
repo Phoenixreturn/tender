@@ -6,7 +6,7 @@
 class TableModel : public GeneralModel
 {
 public:
-    explicit TableModel(int categoryId, QObject* parent = 0);
+    explicit TableModel(int categoryId = -1, QObject* parent = 0);
     void setCategoryId(int id);
     int getCategoryId();
     void setupModelData();

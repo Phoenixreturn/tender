@@ -8,12 +8,12 @@ QMap<QString, int> PGQueryItemDelegate::setCompleterData() const
 {
     QMap<QString, int> values;
     QSqlQuery category_by_parent(db->db);
-    category_by_parent.prepare("SELECT * FROM `products`");
+    category_by_parent.prepare(statements->all_products_query);
     category_by_parent.exec();
     int i = 0;
     while(category_by_parent.next())
     {
-        values.insert(category_by_parent.value(0).toString(), i);
+        values.insert(category_by_parent.value(1).toString(), i);
         i++;
     }
     return values;
@@ -21,9 +21,11 @@ QMap<QString, int> PGQueryItemDelegate::setCompleterData() const
 
 PGQueryItemDelegate::PGQueryItemDelegate(QObject* parent):QStyledItemDelegate(parent)
 {
-  setObjectName("pgQueryItemdelegate");
-  db = &Database::Instance();
-  bool ok = db->connectToDataBase();
+    db = &Database::Instance();
+    statements = &SqlStatements::Instance();
+    if(!db->db.isOpen()) {
+        db->connectToDataBase();
+    }
 }
 
 QWidget *PGQueryItemDelegate::createEditor(QWidget *parent,

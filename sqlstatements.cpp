@@ -34,6 +34,9 @@ int SqlStatements::readSqlStatements()
         if(!QString::compare(lst.first(), "category_by_parent", Qt::CaseInsensitive)) {
              category_by_parent_query = lst.last();
         }
+        if(!QString::compare(lst.first(), "all_products", Qt::CaseInsensitive)) {
+             all_products_query = lst.last();
+        }
         if(!QString::compare(lst.first(), "category_products", Qt::CaseInsensitive)) {
              category_products_query = lst.last();
         }

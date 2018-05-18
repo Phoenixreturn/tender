@@ -18,6 +18,7 @@ public:
     QString remove_mapping_query;
     QString contains_category_in_mapping_query;
     QString contains_product_in_mapping_query;
+    QString all_products_query;
 
     static SqlStatements& Instance();
 private:

@@ -8,6 +8,7 @@ category_products==SELECT products.id, products.product, products.unit, products
 add_product==INSERT INTO `products` (`product`, `unit`, `price`, `currency`) VALUES (? , ?, ?, ?)
 update_product==
 delete_product==DELETE FROM `products` WHERE `products`.`id`=?
+all_products==SELECT * FROM `products`
 
 update_mapping==INSERT INTO `categories_mapping` (`product_id`, `category_id`) VALUES (?, ?)
 remove_mapping==DELETE FROM `categories_mapping` WHERE `categories_mapping`.`map_id`=?

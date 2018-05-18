@@ -45,6 +45,8 @@ QProgressBar *MainWindow::createProgressBar()
     progressBar->setValue(50);
     progressBar->setMaximum(100);
     progressBar->setVisible(false);
+
+    return progressBar;
 }
 
 void MainWindow::openReference(bool clicked)

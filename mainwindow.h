@@ -3,10 +3,8 @@
 
 #include <QMainWindow>
 #include <QWidget>
-
 #include <QPushButton>
 #include <QMessageBox>
-#include <QProgressBar>
 #include "customcombobox.h"
 #include "referencewidget.h"
 
@@ -26,10 +24,8 @@ public:
 private:
     Ui::MainWindow *ui;
     int referenceIndex;
-    QProgressBar* progressBar;
     ReferenceWidget* referenceWidget;
     QToolBar* createToolbar();
-    QProgressBar* createProgressBar();
 private slots:
     void openReference(bool clicked);
     void closeReference(bool clicked);

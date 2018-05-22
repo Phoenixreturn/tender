@@ -18,7 +18,8 @@ class ReferenceWidget: public QWidget
 {
     Q_OBJECT
 public:
-    ReferenceWidget();  
+    ReferenceWidget();
+    void updateModels();
 private slots:
     void selectionTree(QItemSelection, QItemSelection);
     void selectionTable(QItemSelection, QItemSelection);

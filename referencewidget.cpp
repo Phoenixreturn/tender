@@ -85,6 +85,12 @@ void ReferenceWidget::setViewModels()
     selectionTableModel = tableView->selectionModel();
 }
 
+void ReferenceWidget::updateModels()
+{
+    treeModel->updateModel();
+//    tableModel->updateModel();
+}
+
 void ReferenceWidget::setContextMenu()
 {
     treeView->setContextMenuPolicy(Qt::ActionsContextMenu);

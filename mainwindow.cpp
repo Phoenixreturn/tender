@@ -1,15 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QProgressBar>
+#include <QProgressDialog>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);   
-    progressBar = createProgressBar();
     referenceWidget = new ReferenceWidget();
-    ui->statusBar->addPermanentWidget(progressBar);
     addToolBar(Qt::TopToolBarArea, createToolbar());    
 
     connect(ui->openReference,SIGNAL(triggered(bool)),this, SLOT(openReference(bool)));
@@ -19,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete progressBar;
     delete referenceWidget;
 }
 
@@ -37,24 +37,10 @@ QToolBar *MainWindow::createToolbar()
    return ptb;
 }
 
-QProgressBar *MainWindow::createProgressBar()
-{
-    QProgressBar* progressBar = new QProgressBar();
-    progressBar->setAlignment(Qt::AlignRight);
-    progressBar->setMaximumSize(90, 12);
-    progressBar->setValue(50);
-    progressBar->setMaximum(100);
-    progressBar->setVisible(false);
-
-    return progressBar;
-}
-
 void MainWindow::openReference(bool clicked)
 {
-    progressBar->show();
     referenceIndex = ui->tabWidget->addTab(referenceWidget, "Справочник");
     ui->tabWidget->setCurrentIndex(referenceIndex);
-
 }
 
 void MainWindow::closeReference(bool clicked)
@@ -64,5 +50,14 @@ void MainWindow::closeReference(bool clicked)
 
 void MainWindow::update()
 {
-
+    QProgressDialog* pprd = new QProgressDialog("Сохранить данные...", "&Отмена", 0, 0);
+    pprd->setRange(0,0);
+    pprd->setValue(0);
+    pprd->setModal(true);
+    pprd->show();
+    QFuture <void> future = QtConcurrent::run(referenceWidget, &ReferenceWidget::updateModels);
+    while(future.isRunning()) {
+        qApp->processEvents();
+    }
+    delete pprd;
 }

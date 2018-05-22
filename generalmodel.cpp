@@ -117,9 +117,9 @@ bool GeneralModel::insertRows(int row, int count, const QModelIndex &parent)
     GeneralItem* parentItem = NULL;
     if(parent.isValid()) {
         parentItem = static_cast<GeneralItem*>(parent.internalPointer());
-        child = new GeneralItem(data, parentItem);
+        child = new GeneralItem(data, parentItem, true);
     } else {
-        child = new GeneralItem(data, rootItem);
+        child = new GeneralItem(data, rootItem, true);
     }
     if(child) {
         createIndex(row, 0, child);
@@ -151,7 +151,10 @@ bool GeneralModel::removeRows(int row, int count, const QModelIndex &parent)
 
 void GeneralModel::recursiveUpdate(GeneralItem *item)
 {
-    foreach (GeneralItem* child, item->getChildren()) {
+    QList<GeneralItem*> children;
+    children.append(item->getChildren());
+    children.append(item->getDeletedChildren());
+    foreach (GeneralItem* child, children) {
         switch(child->getState()) {
         case GeneralItem::New:
             item->createItem(child);
@@ -161,18 +164,12 @@ void GeneralModel::recursiveUpdate(GeneralItem *item)
             item->updateItem(child);
             recursiveUpdate(child);
             break;
-        default:
-            break;
-        }
-    }
-
-    foreach (GeneralItem* child, item->getDeletedChildren()) {
-        switch(child->getState()) {
         case GeneralItem::Deleted:
             item->deleteItem(child);
             recursiveUpdate(child);
             break;
         default:
+            recursiveUpdate(child);
             break;
         }
     }
@@ -197,4 +194,3 @@ void GeneralModel::emptyModelData(GeneralItem* item)
         delete(item);
     }
 }
-

@@ -85,7 +85,7 @@ void GeneralItem::setState(GeneralItem::ObjectStates state)
 
 GeneralItem::ObjectStates GeneralItem::getState()
 {
-      return state;
+       return state;
 }
 
 int GeneralItem::row() const

@@ -32,7 +32,8 @@ void TableModel::setupModelData()
         {
             QList<QVariant> tempData;
             tempData << QVariant(products_query.value(1)) << QVariant(products_query.value(2))
-                     << QVariant(products_query.value(3)) << QVariant(products_query.value(4));
+                     << QVariant(products_query.value(3)) << QVariant(products_query.value(4))
+                     << QVariant(products_query.value(5)) << QVariant(products_query.value(6));
             temp = new GeneralItem(tempData, rootItem);
             temp->setId(QVariant(products_query.value(0)).toInt());
             rootItem->appendChild(temp);
@@ -48,5 +49,7 @@ void TableModel::setRootItem()
     data.append("Единица");
     data.append("Цена");
     data.append("Валюта");
+    data.append("Источник");
+    data.append("Описание");
     rootItem = new GeneralItem(data);
 }

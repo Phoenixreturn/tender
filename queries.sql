@@ -3,7 +3,7 @@ add_category==INSERT INTO `categories` (`name`, `parent_id`, `description`) VALU
 update_category==UPDATE categories SET name = ?, description = ? WHERE id = ?
 delete_category==DELETE FROM `categories` WHERE `categories`.`id`=?
 
-category_products==SELECT products.id, products.product, products.unit, products.price, products.currency FROM categories_mapping INNER JOIN products ON categories_mapping.product_id = products.id WHERE categories_mapping.category_id=?
+category_products==SELECT products.id, products.product, products.unit, products.price, products.currency, products.source, products.description FROM categories_mapping INNER JOIN products ON categories_mapping.product_id = products.id WHERE categories_mapping.category_id=?
 
 add_product==INSERT INTO `products` (`product`, `unit`, `price`, `currency`) VALUES (? , ?, ?, ?)
 update_product==

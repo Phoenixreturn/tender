@@ -1,5 +1,8 @@
 #include "referencewidget.h"
 #include "deselectabletreeview.h"
+#include "referencewidget.h"
+#include "urlitemdelegate.h"
+#include <QHeaderView>
 
 ReferenceWidget::ReferenceWidget()
 {
@@ -13,6 +16,8 @@ ReferenceWidget::ReferenceWidget()
             this, SLOT(selectionTree(QItemSelection,QItemSelection)));
     connect(selectionTableModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(selectionTable(QItemSelection,QItemSelection)));
+    connect(treeView, SIGNAL(expanded(QModelIndex)), this, SLOT(resizeToContentsTree(QModelIndex)));
+     connect(treeView, SIGNAL(collapsed(QModelIndex)), this, SLOT(resizeToContentsTree(QModelIndex)));
 
     connect(categoryAdd, SIGNAL(clicked(bool)), this, SLOT(insertRowToTreeModel(bool)));
     connect(categoryDelete, SIGNAL(clicked(bool)), this, SLOT(removeRowFromTreeModel(bool)));
@@ -26,16 +31,16 @@ void ReferenceWidget::createLayouts()
     horizontalLayout = new QHBoxLayout(this);
     verticalTreeLayout = new QVBoxLayout();
     treeView = new DeselectableTreeView(this);
-    treeView->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+//    treeView->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     verticalTreeLayout->addWidget(treeView);
-    horizontalLayout->addLayout(verticalTreeLayout);
+    horizontalLayout->addLayout(verticalTreeLayout, 1);
     verticalTableLayout = new QVBoxLayout();
     tableView = new QTableView(this);
     tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     verticalTableLayout->addWidget(tableView);
     horizontalButtonTableLayout = new QHBoxLayout();
     verticalTableLayout->addLayout(horizontalButtonTableLayout);
-    horizontalLayout->addLayout(verticalTableLayout);
+    horizontalLayout->addLayout(verticalTableLayout, 2);
     verticalTreeLayout->addWidget(categoryAdd);
     verticalTreeLayout->addWidget(categoryDelete);
     horizontalButtonTableLayout->addWidget(productAdd);
@@ -72,6 +77,8 @@ void ReferenceWidget::createButtons()
 void ReferenceWidget::setItemDelegates()
 {
     PGQueryItemDelegate* pgquery = new PGQueryItemDelegate(tableView);
+    UrlItemDelegate* urlDelegate = new UrlItemDelegate(tableView);
+    tableView->setItemDelegateForColumn(4, urlDelegate);
     tableView->setItemDelegate(pgquery);
 }
 
@@ -145,4 +152,9 @@ void ReferenceWidget::removeProductFromTable(bool)
          QModelIndex currentIndex = tableView->currentIndex();
          tableModel->removeRow(currentIndex.row());
      }
+}
+
+void ReferenceWidget::resizeToContentsTree(const QModelIndex &index)
+{
+    treeView->resizeColumnToContents(index.column());
 }

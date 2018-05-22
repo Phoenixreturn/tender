@@ -27,6 +27,7 @@ private slots:
     void removeRowFromTreeModel(bool);
     void insertProductToTable(bool);
     void removeProductFromTable(bool);
+    void resizeToContentsTree(const QModelIndex &index);
 private:
     void createLayouts();
     void createButtons();

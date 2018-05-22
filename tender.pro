@@ -35,7 +35,8 @@ SOURCES += \
     generalitem.cpp \
     sqlstatements.cpp \
     generalmodel.cpp \
-    referencewidget.cpp
+    referencewidget.cpp \
+    urlitemdelegate.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +50,8 @@ HEADERS += \
     generalitem.h \
     sqlstatements.h \
     generalmodel.h \
-    referencewidget.h
+    referencewidget.h \
+    urlitemdelegate.h
 
 FORMS += \
         mainwindow.ui

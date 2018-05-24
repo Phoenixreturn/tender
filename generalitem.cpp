@@ -69,13 +69,10 @@ QVariant GeneralItem::data(int column) const
 }
 
 void GeneralItem::setData(int column, QVariant value)
-{
-    if(!value.toString().isEmpty()) {
-        m_itemData[column] = value;
-        if(state != New) {
-            state = Changed;
-        }
-    }
+{   
+    m_itemData[column] = value;
+    if(state != New)
+        state = Changed;
 }
 
 void GeneralItem::setState(GeneralItem::ObjectStates state)

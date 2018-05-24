@@ -36,7 +36,8 @@ SOURCES += \
     sqlstatements.cpp \
     generalmodel.cpp \
     referencewidget.cpp \
-    urlitemdelegate.cpp
+    urlitemdelegate.cpp \
+    urlvalidator.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -51,7 +52,8 @@ HEADERS += \
     sqlstatements.h \
     generalmodel.h \
     referencewidget.h \
-    urlitemdelegate.h
+    urlitemdelegate.h \
+    urlvalidator.h
 
 FORMS += \
         mainwindow.ui

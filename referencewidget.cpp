@@ -36,6 +36,7 @@ void ReferenceWidget::createLayouts()
     horizontalLayout->addLayout(verticalTreeLayout, 1);
     verticalTableLayout = new QVBoxLayout();
     tableView = new QTableView(this);
+    tableView->setMouseTracking(true);
     tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     verticalTableLayout->addWidget(tableView);
     horizontalButtonTableLayout = new QHBoxLayout();

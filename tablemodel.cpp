@@ -52,4 +52,5 @@ void TableModel::setRootItem()
     data.append("Источник");
     data.append("Описание");
     rootItem = new GeneralItem(data);
+    rootItem->setId(-1);
 }

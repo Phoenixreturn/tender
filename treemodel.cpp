@@ -18,6 +18,7 @@ void TreeModel::setRootItem()
     data.append("Имя");
     data.append("Описание");
     rootItem = new GeneralItem(data);
+    rootItem->setId(-1);
 }
 
 void TreeModel::setupChildrenData(GeneralItem *item)

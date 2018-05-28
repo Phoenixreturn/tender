@@ -37,7 +37,8 @@ SOURCES += \
     generalmodel.cpp \
     referencewidget.cpp \
     urlitemdelegate.cpp \
-    urlvalidator.cpp
+    urlvalidator.cpp \
+    tableitem.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -53,7 +54,8 @@ HEADERS += \
     generalmodel.h \
     referencewidget.h \
     urlitemdelegate.h \
-    urlvalidator.h
+    urlvalidator.h \
+    tableitem.h
 
 FORMS += \
         mainwindow.ui

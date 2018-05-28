@@ -46,9 +46,9 @@ public:
     int getId() const;
     void setId(int id);
 
-    int createItem(GeneralItem* item);
-    void updateItem(GeneralItem* item);
-    void deleteItem(GeneralItem* item);
+    virtual int createItem(GeneralItem* item);
+    virtual void updateItem(GeneralItem* item);
+    virtual void deleteItem(GeneralItem* item);
     void emptyLists();
 private:
     ObjectStates state;

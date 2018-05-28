@@ -31,7 +31,6 @@ void ReferenceWidget::createLayouts()
     horizontalLayout = new QHBoxLayout(this);
     verticalTreeLayout = new QVBoxLayout();
     treeView = new DeselectableTreeView(this);
-//    treeView->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     verticalTreeLayout->addWidget(treeView);
     horizontalLayout->addLayout(verticalTreeLayout, 1);
     verticalTableLayout = new QVBoxLayout();
@@ -96,7 +95,7 @@ void ReferenceWidget::setViewModels()
 void ReferenceWidget::updateModels()
 {
     treeModel->updateModel();
-//    tableModel->updateModel();
+    tableModel->updateModel();
 }
 
 void ReferenceWidget::setContextMenu()

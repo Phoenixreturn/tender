@@ -2,16 +2,14 @@
 #define TABLEMODEL_H
 
 #include "generalmodel.h"
+#include "tableitem.h"
 
 class TableModel : public GeneralModel
 {
 public:
-    explicit TableModel(int categoryId = -1, QObject* parent = 0);
-    void setCategoryId(int id);
-    int getCategoryId();
+    explicit TableModel(GeneralItem* category = NULL, QObject* parent = 0);
     void setupModelData();
 private:
-    int categoryId;
     void setRootItem();
 };
 

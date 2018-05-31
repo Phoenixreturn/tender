@@ -58,11 +58,26 @@ int SqlStatements::readSqlStatements()
         if(!QString::compare(lst.first(), "remove_mapping", Qt::CaseInsensitive)) {
              remove_mapping_query = lst.last();
         }
-        if(!QString::compare(lst.first(), "containts_category_in_mapping", Qt::CaseInsensitive)) {
+        if(!QString::compare(lst.first(), "contains_category_in_mapping", Qt::CaseInsensitive)) {
              contains_category_in_mapping_query = lst.last();
         }
-        if(!QString::compare(lst.first(), "containts_product_in_mapping", Qt::CaseInsensitive)) {
+        if(!QString::compare(lst.first(), "contains_product_in_mapping", Qt::CaseInsensitive)) {
              contains_product_in_mapping_query = lst.last();
+        }
+        if(!QString::compare(lst.first(), "update_category", Qt::CaseInsensitive)) {
+             update_category_query = lst.last();
+        }
+        if(!QString::compare(lst.first(), "update_product", Qt::CaseInsensitive)) {
+             update_product_query = lst.last();
+        }
+        if(!QString::compare(lst.first(), "contains_in_mapping", Qt::CaseInsensitive)) {
+             contains_in_mapping_query = lst.last();
+        }
+        if(!QString::compare(lst.first(), "delete_in_mapping", Qt::CaseInsensitive)) {
+             delete_in_mapping_query = lst.last();
+        }
+        if(!QString::compare(lst.first(), "delete_in_mapping_category", Qt::CaseInsensitive)) {
+             delete_in_mapping_category_query = lst.last();
         }
     }
 

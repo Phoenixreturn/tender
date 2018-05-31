@@ -13,6 +13,7 @@ private:
     virtual void mousePressEvent(QMouseEvent *event) {
         QModelIndex item = indexAt(event->pos());
 
+
        if ((item.row() == -1 && item.column() == -1))
        {
            clearSelection();

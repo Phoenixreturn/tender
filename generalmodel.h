@@ -35,6 +35,7 @@ public:
 private:    
     virtual void setRootItem() = 0;
     void recursiveUpdate(GeneralItem* item);
+    void removeDeletedFromDB(GeneralItem* item);
 public slots:
    void updateModel();
 };

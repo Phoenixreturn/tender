@@ -1,5 +1,4 @@
 #include "generalitem.h"
-
 GeneralItem::GeneralItem(const QList<QVariant> &data, GeneralItem *parentItem, bool created)
 {
     db = &Database::Instance();
@@ -34,6 +33,9 @@ void GeneralItem::appendChild(GeneralItem *child)
 bool GeneralItem::removeChild(int row)
 {
     m_childs[row]->setState(GeneralItem::Deleted);
+    for(int i = 0; i < m_childs[row]->getChildren().size(); i++) {
+        m_childs[row]->removeChild(i);
+    }
     m_deletedChilds.append(m_childs[row]);
     m_childs.removeAt(row);
 }
@@ -129,12 +131,25 @@ int GeneralItem::createItem(GeneralItem *item)
 
 void GeneralItem::updateItem(GeneralItem *item)
 {
-
+    QSqlQuery update_category(db->db);
+    update_category.prepare(statements->update_category_query);
+    update_category.bindValue(0, item->data(0));
+    update_category.bindValue(1, item->data(1));
+    update_category.bindValue(2, item->getId());
+    update_category.exec();
 }
 
 void GeneralItem::deleteItem(GeneralItem *item)
 {
+    QSqlQuery delete_in_mapping_category(db->db);
+    delete_in_mapping_category.prepare(statements->delete_in_mapping_category_query);
+    delete_in_mapping_category.bindValue(0, item->getId());
+    bool res = delete_in_mapping_category.exec();
 
+    QSqlQuery delete_category(db->db);
+    delete_category.prepare(statements->delete_category_query);
+    delete_category.bindValue(0, item->getId());
+    bool result = delete_category.exec();
 }
 
 void GeneralItem::emptyLists()

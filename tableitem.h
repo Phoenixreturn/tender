@@ -11,6 +11,10 @@ public:
     virtual int createItem(GeneralItem* item);
     virtual void updateItem(GeneralItem* item);
     virtual void deleteItem(GeneralItem* item);
+    static void setCategory(GeneralItem* category);
+    static GeneralItem *getCategory();
+private:
+    static GeneralItem* category;
 };
 
 #endif // TABLEITEM_H

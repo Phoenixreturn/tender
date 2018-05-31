@@ -1,32 +1,23 @@
 #include "tablemodel.h"
 
-TableModel::TableModel(int categoryId, QObject *parent)
+TableModel::TableModel(GeneralItem* category, QObject *parent)
     : GeneralModel(parent)
 {
-    setCategoryId(categoryId);
+    TableItem::setCategory(category);
     setRootItem();
     setupModelData();
-}
-
-void TableModel::setCategoryId(int id)
-{
-    categoryId = id;
-}
-
-int TableModel::getCategoryId()
-{
-return categoryId;
 }
 
 void TableModel::setupModelData()
 {     
     beginResetModel();
     emptyModelData(rootItem);
-    if(categoryId != -1) {
+    GeneralItem* category = TableItem::getCategory();
+    if(category != NULL && category->getId() != -1) {
         GeneralItem *temp = NULL;
         QSqlQuery products_query(db->db);
-        products_query.prepare(statements->category_products_query);
-        products_query.bindValue(0, categoryId);
+        products_query.prepare(statements->category_products_query);    
+        products_query.bindValue(0, category->getId());
         products_query.exec();
         while(products_query.next())
         {
@@ -51,6 +42,6 @@ void TableModel::setRootItem()
     data.append("Валюта");
     data.append("Источник");
     data.append("Описание");
-    rootItem = new GeneralItem(data);
+    rootItem = new TableItem(data);
     rootItem->setId(-1);
 }

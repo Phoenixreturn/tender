@@ -111,11 +111,12 @@ void ReferenceWidget::selectionTree(QItemSelection selected, QItemSelection dese
     QModelIndexList indexes = selected.indexes();
     if(indexes.size() > 0) {
         QModelIndex temp = indexes.first();
+        GeneralItem* category = static_cast<GeneralItem*>(temp.internalPointer());
         selected.removeFirst();
-        GeneralItem* treeTemp = static_cast<GeneralItem*>(temp.internalPointer());
-        tableModel->setCategoryId(treeTemp->getId());
+        TableItem::setCategory(category);
         tableModel->setupModelData();
     }
+    this->productAdd->setEnabled(true);
     this->categoryAdd->setEnabled(true);
     this->categoryDelete->setEnabled(true);
 }
@@ -135,6 +136,7 @@ void ReferenceWidget::removeRowFromTreeModel(bool)
 {
     QModelIndex currentIndex = treeView->currentIndex();
     QModelIndex parentIndex = currentIndex.parent();
+    tableModel->removeRows(0, tableModel->rowCount());
     treeModel->removeRows(currentIndex.row(), 1, parentIndex);
 }
 

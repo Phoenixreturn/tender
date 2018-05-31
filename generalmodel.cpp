@@ -125,7 +125,7 @@ bool GeneralModel::insertRows(int row, int count, const QModelIndex &parent)
         createIndex(row, 0, child);
     }
     beginInsertRows(parent, 1, 1);
-    if(parentItem != NULL) {
+    if(parentItem  != NULL) {
         parentItem->appendChild(child);
     } else {
         rootItem->appendChild(child);
@@ -136,17 +136,20 @@ bool GeneralModel::insertRows(int row, int count, const QModelIndex &parent)
 bool GeneralModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     QModelIndex temp = index(row,0,parent);
-    if(!parent.isValid()) {
+    if(temp.isValid()) {
+        if(!parent.isValid()) {
+            beginRemoveRows(temp.parent(), temp.row(), temp.row());
+            rootItem->removeChild(row);
+            endRemoveRows();
+            return true;
+        }
         beginRemoveRows(temp.parent(), temp.row(), temp.row());
-        rootItem->removeChild(row);
+        GeneralItem* parentItem = static_cast<GeneralItem*>(parent.internalPointer());
+        parentItem->removeChild(row);
         endRemoveRows();
         return true;
     }
-    beginRemoveRows(temp.parent(), temp.row(), temp.row());
-    GeneralItem* parentItem = static_cast<GeneralItem*>(parent.internalPointer());
-    parentItem->removeChild(row);
-    endRemoveRows();
-    return true;
+    return false;
 }
 
 void GeneralModel::recursiveUpdate(GeneralItem *item)
@@ -165,8 +168,8 @@ void GeneralModel::recursiveUpdate(GeneralItem *item)
             recursiveUpdate(child);
             break;
         case GeneralItem::Deleted:
+            removeDeletedFromDB(child);
             item->deleteItem(child);
-            recursiveUpdate(child);
             break;
         default:
             recursiveUpdate(child);
@@ -174,6 +177,25 @@ void GeneralModel::recursiveUpdate(GeneralItem *item)
         }
     }
 }
+
+void GeneralModel::removeDeletedFromDB(GeneralItem *item)
+{
+    QList<GeneralItem*> items;
+    items.append(item->getChildren());
+    items.append(item->getDeletedChildren());
+    foreach (GeneralItem* child, items) {
+        QList<GeneralItem*> childs = child->getChildren();
+        childs.append(child->getDeletedChildren());
+        if(childs.size() == 0) {
+            item->deleteItem(child);
+        } else {
+            removeDeletedFromDB(child);
+            item->deleteItem(child);
+        }
+    }
+}
+
+
 
 void GeneralModel::updateModel()
 {

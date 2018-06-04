@@ -53,17 +53,6 @@ void TableItem::deleteItem(GeneralItem *item)
     delete_in_mapping.bindValue(0, item->getId());
     delete_in_mapping.bindValue(1, category_id);
     delete_in_mapping.exec();
-
-    QSqlQuery contains_in_mapping(db->db);
-    contains_in_mapping.prepare(statements->contains_product_in_mapping_query);
-    contains_in_mapping.bindValue(0, item->getId());
-    contains_in_mapping.exec();
-    if(contains_in_mapping.size() == 0) {
-        QSqlQuery delete_product(db->db);
-        delete_product.prepare(statements->delete_product_query);
-        delete_product.bindValue(0, item->getId());
-        delete_product.exec();
-    }
 }
 
 void TableItem::setCategory(GeneralItem *category)

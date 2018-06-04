@@ -9,8 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);   
     referenceWidget = new ReferenceWidget();
+    ui->setupUi(this);   
     addToolBar(Qt::TopToolBarArea, createToolbar());    
 
     connect(ui->openReference,SIGNAL(triggered(bool)),this, SLOT(openReference(bool)));
@@ -46,6 +46,7 @@ void MainWindow::openReference(bool clicked)
 void MainWindow::closeReference(bool clicked)
 {
     ui->tabWidget->removeTab(referenceIndex);
+    referenceWidget->refreshModels();
 }
 
 void MainWindow::update()

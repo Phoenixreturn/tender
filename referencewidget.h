@@ -19,7 +19,9 @@ class ReferenceWidget: public QWidget
     Q_OBJECT
 public:
     ReferenceWidget();
+    ~ReferenceWidget();
     void updateModels();
+    void refreshModels();
 private slots:
     void selectionTree(QItemSelection, QItemSelection);
     void selectionTable(QItemSelection, QItemSelection);
@@ -29,6 +31,7 @@ private slots:
     void removeProductFromTable(bool);
     void resizeToContentsTree(const QModelIndex &index);
 private:
+    void connectSlots();
     void createLayouts();
     void createButtons();
     void setContextMenu();

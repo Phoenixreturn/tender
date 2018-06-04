@@ -62,7 +62,8 @@ FORMS += \
 
 DISTFILES += \
     .gitignore \
-    queries.sql
+    queries.sql \
+    mysql_functions
 
 RESOURCES += \
     tender.qrc

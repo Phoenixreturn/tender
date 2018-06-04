@@ -11,18 +11,16 @@ ReferenceWidget::ReferenceWidget()
     setViewModels();
     setContextMenu();
     setItemDelegates();
-
-    connect(selectionTreeModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            this, SLOT(selectionTree(QItemSelection,QItemSelection)));
-    connect(selectionTableModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            this, SLOT(selectionTable(QItemSelection,QItemSelection)));
-    connect(treeView, SIGNAL(expanded(QModelIndex)), this, SLOT(resizeToContentsTree(QModelIndex)));
-     connect(treeView, SIGNAL(collapsed(QModelIndex)), this, SLOT(resizeToContentsTree(QModelIndex)));
-
+    connectSlots();
     connect(categoryAdd, SIGNAL(clicked(bool)), this, SLOT(insertRowToTreeModel(bool)));
     connect(categoryDelete, SIGNAL(clicked(bool)), this, SLOT(removeRowFromTreeModel(bool)));
     connect(productAdd, SIGNAL(clicked(bool)), this, SLOT(insertProductToTable(bool)));
     connect(productDelete, SIGNAL(clicked(bool)), this, SLOT(removeProductFromTable(bool)));
+
+}
+
+ReferenceWidget::~ReferenceWidget()
+{
 
 }
 
@@ -98,6 +96,18 @@ void ReferenceWidget::updateModels()
     tableModel->updateModel();
 }
 
+void ReferenceWidget::refreshModels()
+{
+    treeView->setModel(NULL);
+    tableView->setModel(NULL);
+    delete treeModel;
+    delete tableModel;
+    setViewModels();
+    connectSlots();
+    this->productAdd->setEnabled(false);
+    this->productDelete->setEnabled(false);
+}
+
 void ReferenceWidget::setContextMenu()
 {
     treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -136,7 +146,7 @@ void ReferenceWidget::removeRowFromTreeModel(bool)
 {
     QModelIndex currentIndex = treeView->currentIndex();
     QModelIndex parentIndex = currentIndex.parent();
-    tableModel->removeRows(0, tableModel->rowCount());
+    tableModel->clear();
     treeModel->removeRows(currentIndex.row(), 1, parentIndex);
 }
 
@@ -159,4 +169,14 @@ void ReferenceWidget::removeProductFromTable(bool)
 void ReferenceWidget::resizeToContentsTree(const QModelIndex &index)
 {
     treeView->resizeColumnToContents(index.column());
+}
+
+void ReferenceWidget::connectSlots()
+{
+    connect(selectionTreeModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(selectionTree(QItemSelection,QItemSelection)));
+    connect(selectionTableModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(selectionTable(QItemSelection,QItemSelection)));
+    connect(treeView, SIGNAL(expanded(QModelIndex)), this, SLOT(resizeToContentsTree(QModelIndex)));
+     connect(treeView, SIGNAL(collapsed(QModelIndex)), this, SLOT(resizeToContentsTree(QModelIndex)));
 }

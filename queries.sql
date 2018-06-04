@@ -14,7 +14,7 @@ update_mapping==INSERT INTO `categories_mapping` (`product_id`, `category_id`) V
 remove_mapping==DELETE FROM `categories_mapping` WHERE `categories_mapping`.`map_id`=?
 
 contains_in_mapping==SELECT * FROM `categories_mapping` WHERE `product_id`=? AND `category_id`=?
-delete_in_mapping==DELETE FROM `categories_mapping` WHERE `product_id`=? AND `category_id`=?
-delete_in_mapping_category==DELETE FROM `categories_mapping` WHERE `category_id`=?
+delete_in_mapping==SELECT delete_product(?, ?)
+delete_in_mapping_category==CALL delete_category(?)
 contains_category_in_mapping==SELECT * FROM `categories_mapping` WHERE category_id=?
 contains_product_in_mapping==SELECT * FROM `categories_mapping` WHERE `product_id`=?

@@ -32,6 +32,7 @@ public:
    bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
    virtual void setupModelData() = 0;
+   void clear();
 private:    
     virtual void setRootItem() = 0;
     void recursiveUpdate(GeneralItem* item);

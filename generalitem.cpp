@@ -144,12 +144,7 @@ void GeneralItem::deleteItem(GeneralItem *item)
     QSqlQuery delete_in_mapping_category(db->db);
     delete_in_mapping_category.prepare(statements->delete_in_mapping_category_query);
     delete_in_mapping_category.bindValue(0, item->getId());
-    bool res = delete_in_mapping_category.exec();
-
-    QSqlQuery delete_category(db->db);
-    delete_category.prepare(statements->delete_category_query);
-    delete_category.bindValue(0, item->getId());
-    bool result = delete_category.exec();
+    delete_in_mapping_category.exec();
 }
 
 void GeneralItem::emptyLists()

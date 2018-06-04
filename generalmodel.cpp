@@ -152,6 +152,13 @@ bool GeneralModel::removeRows(int row, int count, const QModelIndex &parent)
     return false;
 }
 
+void GeneralModel::clear()
+{
+    beginResetModel();
+    emptyModelData(rootItem);
+    endResetModel();
+}
+
 void GeneralModel::recursiveUpdate(GeneralItem *item)
 {
     QList<GeneralItem*> children;

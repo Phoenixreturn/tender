@@ -1,0 +1,46 @@
+//delete_product:
+BEGIN
+        DECLARE done INT DEFAULT 0;
+    DECLARE id INT;
+        DECLARE cur1 CURSOR FOR SELECT categories_mapping.product_id FROM categories_mapping WHERE categories_mapping.product_id=product_id;
+        DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
+
+        DELETE FROM categories_mapping WHERE categories_mapping.product_id=product_id AND 			categories_mapping.category_id=category_id;
+
+        OPEN cur1;
+
+        REPEAT
+        FETCH cur1 INTO id;
+        IF NOT done THEN
+            RETURN 1;
+        ELSE
+                DELETE FROM products WHERE products.id=product_id;
+            RETURN 1;
+        END IF;
+        UNTIL done END REPEAT;
+
+        CLOSE cur1;
+END
+
+//delete_category:
+BEGIN
+
+        DECLARE done  INT unsigned DEFAULT 0;
+        DECLARE Var2 INT;
+        DECLARE cur1 CURSOR FOR SELECT categories_mapping.product_id FROM categories_mapping WHERE categories_mapping.category_id=category_id;
+        DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
+
+        OPEN cur1;
+
+        REPEAT
+                FETCH cur1 INTO Var2;
+                IF NOT done THEN
+                        SELECT delete_product(Var2, category_id);
+                END IF;
+        UNTIL done END REPEAT;
+
+        CLOSE cur1;
+
+        DELETE FROM categories WHERE categories.id=category_id;
+
+END

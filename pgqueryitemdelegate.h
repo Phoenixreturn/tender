@@ -3,24 +3,16 @@
 
 #include <QStyledItemDelegate>
 #include <QLineEdit>
-#include <QCompleter>
-#include "database.h"
-#include "sqlstatements.h"
+#include "pgvalidator.h"
 
 class PGQueryItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    explicit PGQueryItemDelegate(QObject* parent = 0);
-    QWidget* createEditor (QWidget* parent,
-                            const QStyleOptionViewItem& option,
-                            const QModelIndex& index ) const;
-private:
-    QMap<QString, int> setCompleterData() const;
-    Database* db;
-    SqlStatements* statements;
-protected:
-    virtual bool eventFilter(QObject *object, QEvent *event);
+    explicit PGQueryItemDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
+    virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    virtual void setEditorData(QWidget * editor, const QModelIndex & index) const;
+
 };
 
 #endif // PGQUERYITEMDELEGATE_H
